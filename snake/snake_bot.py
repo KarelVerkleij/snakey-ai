@@ -21,5 +21,5 @@ class BotApp(App):
         return pygame.event.Event(pygame.KEYDOWN, key=chosen_direction)
 
 if __name__ == '__main__':
-    theApp = BotApp()
+    theApp = BotApp(logging=True)
     theApp.on_execute()
