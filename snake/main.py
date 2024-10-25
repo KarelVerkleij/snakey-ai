@@ -173,10 +173,10 @@ class App:
 
         # Snake body growing mechanism 
         # if fruits and snakes collide then scores will be 
-        # incremented by 10
+        # incremented by 1
         self.snake_body.insert(0, list(self.snake_position))
         if self.snake_position[0] == self.fruit_position[0] and self.snake_position[1] == self.fruit_position[1]:
-            self.score += 10
+            self.score += 1
             self.fruit_spawn = False
         else:
             self.snake_body.pop()
@@ -185,7 +185,7 @@ class App:
             self.fruit_position = [random.randrange(1, (self.window_x//10)) * 10, 
                                    random.randrange(1, (self.window_y//10)) * 10]
             
-        fruit_spawn = True
+        self.fruit_spawn = True
         self.game_window.fill(self.black)
         
         for pos in self.snake_body:
