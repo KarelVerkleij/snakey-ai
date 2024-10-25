@@ -1,5 +1,5 @@
-from main import App
-from boiler_plate import overrides
+from snake.snake import App
+from snake.utils import overrides
 
 import pygame
 from random import choice
