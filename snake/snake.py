@@ -7,6 +7,7 @@ import pygame
 import time 
 import random
 import logging 
+import os
 
 class App:
     def __init__(self, _logging=False):
@@ -17,10 +18,7 @@ class App:
         self._logging = _logging
         self.cycle_n = 0
         if self._logging:
-            pass
-            logging.root.setLevel(logging.NOTSET)
-            self.logger_module = logging.getLogger(__name__)
-            # self.logger_module.info("logging enabled")
+            self.logger_init()
 
         # basic config speed
         self.snake_speed = 15
@@ -240,29 +238,30 @@ class App:
         # Frame Per Second /Refresh Rate
         self.fps.tick(self.snake_speed)
 
+    def logger_init(self):
+        filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../logs/test_log.log')
+
+        logging.basicConfig(
+                            filename=filename,
+                            filemode='a',
+                            # force=True,
+                            format='%(message)s,',
+                            datefmt='%H:%M:%S',
+                            level=logging.NOTSET)
+        
+        logging.root.setLevel(logging.NOTSET)
+        self.logger_module = logging.getLogger(__name__)
+        # self.logger_module.info("logging enabled")
+
     def logger(self):
-        self.logger_module.info({"cycle": self.cycle_n, 
-                                "current_snake_position_x": self.snake_position[0],
-                                "current_snake_position_y": self.snake_position[1],
-                                "current_direction": self.direction, 
-                                "current_score":  self.score,
-                                "fruit_position_x": self.fruit_position[0], 
-                                "fruit_position_y": self.fruit_position[1]
-                            })
+        self.logger_module.info(f"cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
+                               )
         
         # iterate cycle
         self.cycle_n = self.cycle_n + 1
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-                        # filename='../logs/test_log.log',
-                        # filemode='w',
-                        # force=True,
-                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                        datefmt='%H:%M:%S',
-                        level=logging.NOTSET)
-
     theApp = App(_logging=True)
     theApp.on_execute()
 
