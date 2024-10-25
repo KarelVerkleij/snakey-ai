@@ -122,21 +122,21 @@ class App:
     def game_over(self):
     
         # creating font object my_font
-        self.my_font = pygame.font.SysFont('times new roman', 50)
+        my_font = pygame.font.SysFont('times new roman', 50)
         
         # creating a text surface on which text 
         # will be drawn
-        self.game_over_surface = self.my_font.render('Your Score is : ' + str(self.score), True, self.red)
+        game_over_surface = my_font.render('Your Score is : ' + str(self.score), True, self.red)
         
         # create a rectangular object for the text
         # surface object
-        self.game_over_rect = self.game_over_surface.get_rect()
+        game_over_rect = game_over_surface.get_rect()
         
         # setting position of the text
-        self.game_over_rect.midtop = (self.window_x/2, self.window_y/4)
+        game_over_rect.midtop = (self.window_x/2, self.window_y/4)
         
         # blit will draw the text on screen
-        self.game_window.blit(self.game_over_surface, self.game_over_rect)
+        self.game_window.blit(game_over_surface, game_over_rect)
         pygame.display.flip()
         
         # after 2 seconds we will quit the 
@@ -183,9 +183,10 @@ class App:
             
         if not self.fruit_spawn:
             self.fruit_position = [random.randrange(1, (self.window_x//10)) * 10, 
-                                   random.randrange(1, (self.window_y//10)) * 10]
+                                   random.randrange(1, (self.window_y//10)) * 10]            
+            self.fruit_spawn = True
             
-        self.fruit_spawn = True
+        
         self.game_window.fill(self.black)
         
         for pos in self.snake_body:
