@@ -7,6 +7,11 @@ from random import choice
 
 class BotApp(App):
 
+    def __init__(self, _logging=True):
+        super().__init__(_logging)
+
+        self.bot = 'BOT_NAME'
+
     @overrides(App)
     def on_loop(self):
         pygame.event.post(self.random_direction())
@@ -21,5 +26,5 @@ class BotApp(App):
         return pygame.event.Event(pygame.KEYDOWN, key=chosen_direction)
 
 if __name__ == '__main__':
-    theApp = BotApp(logging=True)
+    theApp = BotApp()
     theApp.on_execute()

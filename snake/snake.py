@@ -17,6 +17,7 @@ class App:
         # logging configs
         self._logging = _logging
         self.cycle_n = 0
+        self.bot = 'HUMAN'
         if self._logging:
             self.logger_init()
 
@@ -77,8 +78,6 @@ class App:
     # do nothing
     def on_loop(self):
         self.game_loop()
-        if self._logging:
-            self.logger()
 
     # do nothing
     def on_render(self):
@@ -167,6 +166,10 @@ class App:
 
     def game_loop(self):
 
+        # logging
+        if self._logging:
+            self.logger()
+
         # If two keys pressed simultaneously 
         # we don't want snake to move into two directions
         # simultaneously
@@ -254,9 +257,9 @@ class App:
         # self.logger_module.info("logging enabled")
 
     def logger(self):
-        self.logger_module.info(f"cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
+        # logger path
+        self.logger_module.info(f"bot: {self.bot}, cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
                                )
-        
         # iterate cycle
         self.cycle_n = self.cycle_n + 1
 
