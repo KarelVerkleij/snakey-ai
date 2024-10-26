@@ -4,20 +4,19 @@ from snake.utils import overrides
 import pygame
 from random import choice
 
-
 class BotApp(App):
 
     def __init__(self, _logging=True):
         super().__init__(_logging)
 
-        self.bot = 'BOT_NAME'
+        self.bot_name = 'RANDOM_BOT'
 
     @overrides(App)
     def on_loop(self):
-        pygame.event.post(self.random_direction())
+        pygame.event.post(self.bot_input())
         self.game_loop()
 
-    def random_direction(self):
+    def bot_input(self) -> pygame.event.Event:
         
         list_of_directions = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT] 
 

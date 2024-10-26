@@ -17,15 +17,18 @@ class App:
         # logging configs
         self._logging = _logging
         self.cycle_n = 0
-        self.bot = 'HUMAN'
+        self.bot_name = 'HUMAN'
         if self._logging:
             self.logger_init()
 
-        # basic config speed
+        # basic config to start game speed
         self.snake_speed = 15
-        
-        # defining snake default position 
         self.snake_position = [100, 50]
+        self.score = 0
+        
+        # setting default snake direction towards right
+        self.direction = 'RIGHT'
+        self.change_to = self.direction
 
         # defining first 4 blocks of snake
         self.snake_body = [  [100, 50],
@@ -33,13 +36,6 @@ class App:
                              [80, 50],
                              [70, 50]
                           ]
-        
-        # score
-        self.score = 0
-
-        # setting default snake direction towards right
-        self.direction = 'RIGHT'
-        self.change_to = self.direction
 
         # window size
         self.size = self.window_x, self.window_y = 720, 480
@@ -57,16 +53,14 @@ class App:
         pygame.init()
 
         # Initialise game window
-        pygame.display.set_caption('GeeksforGeeks Snakes')
+        pygame.display.set_caption('Snakey-ai')
         self.game_window = pygame.display.set_mode((self.window_x, self.window_y))
         
         # FPS (frames per second) controller
         self.fps = pygame.time.Clock()
 
         # fruit position 
-        self.fruit_position = [random.randrange(1, (self.window_x//10)) * 10,
-                               random.randrange(1, (self.window_y//10)) * 10]
-        self.fruit_spawn = True
+        self.generate_fruit()
 
         self._running = True
 
@@ -82,6 +76,27 @@ class App:
     # do nothing
     def on_render(self):
         pass
+
+    # generates fruit
+    def generate_fruit(self):
+
+        while(True):
+            proposed_fruit_position = [random.randrange(1, (self.window_x//10)) * 10,
+                                       random.randrange(1, (self.window_y//10)) * 10]
+
+            if self.empty_space(proposed_fruit_position):
+                break
+
+        self.fruit_position = proposed_fruit_position
+
+
+    # check if x,y is not occupied by snake body
+    def empty_space(self, fruit_position):
+
+        if fruit_position not in self.snake_body:
+            return True
+        else:
+            return False
     
     # quits all pygame modules
     def on_cleanup(self):
@@ -199,16 +214,10 @@ class App:
         self.snake_body.insert(0, list(self.snake_position))
         if self.snake_position[0] == self.fruit_position[0] and self.snake_position[1] == self.fruit_position[1]:
             self.score += 1
-            self.fruit_spawn = False
+            self.generate_fruit()
         else:
             self.snake_body.pop()
             
-        if not self.fruit_spawn:
-            self.fruit_position = [random.randrange(1, (self.window_x//10)) * 10, 
-                                   random.randrange(1, (self.window_y//10)) * 10]            
-            self.fruit_spawn = True
-            
-        
         self.game_window.fill(self.black)
         
         for pos in self.snake_body:
@@ -258,7 +267,7 @@ class App:
 
     def logger(self):
         # logger path
-        self.logger_module.info(f"bot: {self.bot}, cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
+        self.logger_module.info(f"bot: {self.bot_name}, cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
                                )
         # iterate cycle
         self.cycle_n = self.cycle_n + 1
