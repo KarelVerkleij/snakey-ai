@@ -13,8 +13,9 @@ class BotApp(App):
 
     @overrides(App)
     def on_loop(self):
-        pygame.event.post(self.bot_input())
+        
         self.game_loop()
+        pygame.event.post(self.bot_input())
 
     def bot_input(self) -> pygame.event.Event:
         

@@ -45,9 +45,9 @@ class LogicGreedyBotApp(BotApp):
         self.distance_fruit_snake_x = self.fruit_position[0] - self.future_snake_position[0]
         self.distance_fruit_snake_y = self.fruit_position[1] - self.snake_position[1]
 
-        if self.distance_fruit_snake_x < 0:
+        if self.distance_fruit_snake_x > 0:
             list_of_proposed_directions.append(pygame.K_RIGHT)
-        elif self.distance_fruit_snake_x > 0:
+        elif self.distance_fruit_snake_x < 0:
             list_of_proposed_directions.append(pygame.K_LEFT)
 
         if self.distance_fruit_snake_y < 0:
