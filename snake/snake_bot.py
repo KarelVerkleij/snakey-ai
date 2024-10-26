@@ -9,7 +9,7 @@ class BotApp(App):
     def __init__(self, _logging=True):
         super().__init__(_logging)
 
-        self.bot_name = 'RANDOM_BOT'
+        self.bot_name = 'BOT_RANDOM'
 
     @overrides(App)
     def on_loop(self):

@@ -254,8 +254,8 @@ class App:
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../logs/test_log.log')
 
         logging.basicConfig(
-                            filename=filename,
-                            filemode='a',
+                            # filename=filename,
+                            # filemode='a',
                             # force=True,
                             format='%(message)s,',
                             datefmt='%H:%M:%S',
@@ -269,6 +269,7 @@ class App:
         # logger path
         self.logger_module.info(f"bot: {self.bot_name}, cycle: {self.cycle_n}, current_snake_position_x: {self.snake_position[0]}, current_snake_position_y: {self.snake_position[1]}, current_direction: {self.direction}, current_score:  {self.score}, fruit_position_x: {self.fruit_position[0]}, fruit_position_y: {self.fruit_position[1]}"
                                )
+
         # iterate cycle
         self.cycle_n = self.cycle_n + 1
 
