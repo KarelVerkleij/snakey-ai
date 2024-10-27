@@ -8,8 +8,10 @@ class BotApp(App):
 
     def __init__(self, _logging=True):
         super().__init__(_logging)
-
+        
         self.bot_name = 'BOT_RANDOM'
+        self.log_file_path = '../logs/bot/test_log.log'
+        self.logging_config="LOGFILE"
 
     @overrides(App)
     def on_loop(self):

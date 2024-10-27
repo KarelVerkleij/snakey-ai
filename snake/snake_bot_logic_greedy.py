@@ -12,7 +12,11 @@ class LogicGreedyBotApp(BotApp):
     def __init__(self, _logging=True):
         super().__init__(_logging)
 
+        self.snake_speed = 100
+
         self.bot_name = 'BOT_GREEDY_LOGIC'
+        self.log_file_path = '../logs/bot_logic_greedy/test_log.log'
+        self.logging_config="LOGFILE"
 
         self.list_of_opposite_directions = [[pygame.K_RIGHT, 'LEFT'],
                                             [pygame.K_LEFT, 'RIGHT'],
@@ -65,7 +69,6 @@ class LogicGreedyBotApp(BotApp):
     def direction_handler(self, list_of_proposed_directions):
         
         if [list_of_proposed_directions[0], self.direction] in self.list_of_opposite_directions:
-            print("gotcha")
             return list_of_proposed_directions[1]
         else:
             return list_of_proposed_directions[0]

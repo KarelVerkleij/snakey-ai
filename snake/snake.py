@@ -10,16 +10,18 @@ import logging
 import os
 
 class App:
-    def __init__(self, _logging=False):
+    def __init__(self, 
+                 _logging=True):
+    
         self._running = True
         self._display_surf = None
         
         # logging configs
         self._logging = _logging
+        self.logging_config = "COMMANDLINE"
+        self.log_file_path = '../logs/test_log.log'
         self.cycle_n = 0
         self.bot_name = 'HUMAN'
-        if self._logging:
-            self.logger_init()
 
         # basic config to start game speed
         self.snake_speed = 15
@@ -50,6 +52,10 @@ class App:
 
     # initializes all pygame modules, then creates window 
     def on_init(self):
+        
+        if self._logging:
+            self.logger_init()
+            
         pygame.init()
 
         # Initialise game window
@@ -251,16 +257,25 @@ class App:
         self.fps.tick(self.snake_speed)
 
     def logger_init(self):
-        filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../logs/test_log.log')
-
-        logging.basicConfig(
-                            # filename=filename,
-                            # filemode='a',
-                            # force=True,
-                            format='%(message)s,',
-                            datefmt='%H:%M:%S',
-                            level=logging.NOTSET)
         
+        if self.logging_config == "COMMANDLINE":
+            logging.basicConfig(
+                                # filename=filename,
+                                # filemode='a',
+                                # force=True,
+                                format='%(message)s,',
+                                datefmt='%H:%M:%S',
+                                level=logging.NOTSET)
+        elif self.logging_config == "LOGFILE":
+            filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), self.log_file_path)
+            logging.basicConfig(
+                                filename=filename,
+                                filemode='a',
+                                force=True,
+                                format='%(message)s,',
+                                datefmt='%H:%M:%S',
+                                level=logging.NOTSET)
+            
         logging.root.setLevel(logging.NOTSET)
         self.logger_module = logging.getLogger(__name__)
         # self.logger_module.info("logging enabled")
