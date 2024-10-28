@@ -4,9 +4,6 @@ from snake.utils import overrides
 import pygame
 from random import choice
 
-# algorithm https://kychin.netlify.app/snake-blog/hamiltonian-cycle/#:~:text=When%20applied%20to%20the%20game,(like%20in%20my%20case).
-# potential example python https://github.com/CheranMahalingam/Snake_Hamiltonian_Cycle_Solver/blob/master/Snake_Solver.py
-
 class LogicGreedyBotApp(BotApp):
 
     def __init__(self, bot_study_name='', log_file_path='../logs/bot_logic_greedy/test_log.log'):
@@ -27,7 +24,7 @@ class LogicGreedyBotApp(BotApp):
                                             [pygame.K_DOWN, 'UP']]
 
     @overrides(BotApp) 
-    def bot_input(self) -> pygame.event.Event:
+    def bot_input(self):
 
         chosen_direction = self.direction_picker()
 
@@ -95,5 +92,4 @@ class LogicGreedyBotApp(BotApp):
 if __name__ == '__main__':
 
     theApp = LogicGreedyBotApp(bot_study_name = '_1')
-    print(theApp.game_over_check)
     theApp.on_execute()

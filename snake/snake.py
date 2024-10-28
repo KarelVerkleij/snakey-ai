@@ -39,11 +39,7 @@ class App:
         self.change_to = self.direction
 
         # defining first 4 blocks of snake
-        self.snake_body = [  [100, 50],
-                             [90, 50],
-                             [80, 50],
-                             [70, 50]
-                          ]
+        self.snake_body = [self.snake_position]
 
         # window size
         self.size = self.window_x, self.window_y = 720, 480
