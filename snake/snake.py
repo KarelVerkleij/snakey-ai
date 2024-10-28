@@ -184,15 +184,25 @@ class App:
         self.game_window.blit(game_over_surface, game_over_rect)
         pygame.display.flip()
 
-        time.sleep(1)
-
+        self.print_results()
+        
         self.game_exit()
+
+    def print_results(self):
+        bot_name = self.bot_name
+        final_n_cylce = self.cycle_n
+        final_score = self.score
+        print(f"bot: {bot_name}, max_cycle: {final_n_cylce}, final_score {final_score}")
+
 
     def game_exit(self):
         # deactivating pygame library
+
         pygame.quit()
         sys.exit()
         
+        time.sleep(1)
+
     def game_loop(self):
 
         # logging

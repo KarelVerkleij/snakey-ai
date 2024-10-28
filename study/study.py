@@ -3,7 +3,7 @@ from snake.snake_bot import BotApp
 from snake.snake_bot_logic_greedy import LogicGreedyBotApp
 
 from time import sleep
-from multiprocessing import Process
+import multiprocessing as mp
 
 import logging
 import os
@@ -23,10 +23,10 @@ class Analysis:
             theApp.log_file_path = '../logs/bot_logic_greedy/study_1'
             
             print(f"i : {str(i)}")
-            p = Process(target=theApp.on_execute)        
+            p = mp.Process(target=theApp.on_execute)        
             p.start()
             p.join()
-            print("back in main process")
+            
 
                 # if theApp._game_over:
                     
@@ -66,7 +66,7 @@ class Analysis:
         logging.root.setLevel(logging.NOTSET)
         self.logger_module = logging.getLogger(__name__)
 
-
+#TODO refactor to be able to spawn multiple processes with arguments
 if __name__ == '__main__':
     analysis = Analysis()
     analysis.studyLogicGreedy()
