@@ -1,6 +1,7 @@
 from snake.snake import App
 from snake.snake_bot import BotApp
 from snake.snake_bot_logic_greedy import LogicGreedyBotApp
+from snake.snake_bot_logic_infinity import LogicInfintyBotApp
 
 from time import sleep
 
@@ -33,11 +34,28 @@ class Analysis:
             p.start()
             p.join()
 
+    def studyLogicInfinity(self):
+        
+        
+        for i in range(0,10):
+            theApp = LogicInfintyBotApp(bot_study_name=f"_{str(i)}",
+                                        log_file_path = f'../logs/bot_logic_infinity/study_1_iteration_{str(i)}.log'
+                                        )
+            theApp.snake_speed=1000
+            
+            print(f"i : {str(i)}")
+            p = Process(target=theApp.on_execute)        
+            p.start()
+            p.join()
+        
+        
+
+
 
 #TODO refactor to be able to spawn multiple processes with arguments
 if __name__ == '__main__':
     analysis = Analysis()
-    analysis.studyLogicGreedy()
+    analysis.studyLogicInfinity()
 
 
 # ALL STUFF FOR MULTIPROCESSING NEED TO FIGURE OUT ONE DAY
