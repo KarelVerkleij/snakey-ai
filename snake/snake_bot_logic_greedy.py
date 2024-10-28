@@ -62,10 +62,11 @@ class LogicGreedyBotApp(BotApp):
         elif self.distance_fruit_snake_y > 0:
             list_of_proposed_directions.append(pygame.K_DOWN)     
 
-        if len(list_of_proposed_directions) < 2:
+        while len(list_of_proposed_directions) < 2:
             list_of_directions = [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT] 
-            random_direction = choice(list_of_directions)  
-            list_of_proposed_directions.append(random_direction)
+            random_direction = choice(list_of_directions)
+            if random_direction not in list_of_proposed_directions:  
+                list_of_proposed_directions.append(random_direction)
 
         return list_of_proposed_directions
 
