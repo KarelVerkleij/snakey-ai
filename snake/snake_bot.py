@@ -6,7 +6,7 @@ from random import choice
 
 class BotApp(App):
 
-    def __init__(self, bot_study_name=''):
+    def __init__(self, bot_study_name='', log_file_path = '../logs/bot/test_log.log'):
         super().__init__()
         
         self.default_bot_name = 'BOT_RANDOM'

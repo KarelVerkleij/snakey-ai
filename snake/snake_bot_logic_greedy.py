@@ -9,7 +9,7 @@ from random import choice
 
 class LogicGreedyBotApp(BotApp):
 
-    def __init__(self, bot_study_name=''):
+    def __init__(self, bot_study_name='', log_file_path='../logs/bot_logic_greedy/test_log.log'):
         super().__init__()
 
         self.snake_speed = 100
