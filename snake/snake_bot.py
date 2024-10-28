@@ -6,11 +6,12 @@ from random import choice
 
 class BotApp(App):
 
-    def __init__(self, _logging=True):
-        super().__init__(_logging)
+    def __init__(self, bot_study_name=''):
+        super().__init__()
         
-        self.bot_name = 'BOT_RANDOM'
-        self.log_file_path = '../logs/bot/test_log.log'
+        self.default_bot_name = 'BOT_RANDOM'
+        self.bot_name = self.default_bot_name + bot_study_name
+        # self.log_file_path = '../logs/bot/test_log.log'
         self.logging_config="LOGFILE"
 
     @overrides(App)
@@ -28,5 +29,5 @@ class BotApp(App):
         return pygame.event.Event(pygame.KEYDOWN, key=chosen_direction)
 
 if __name__ == '__main__':
-    theApp = BotApp()
+    theApp = BotApp(log_file_path = '../logs/bot/test_log.log')
     theApp.on_execute()

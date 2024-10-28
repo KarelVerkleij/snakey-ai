@@ -9,13 +9,16 @@ from random import choice
 
 class LogicGreedyBotApp(BotApp):
 
-    def __init__(self, _logging=True):
-        super().__init__(_logging)
+    def __init__(self, bot_study_name=''):
+        super().__init__()
 
         self.snake_speed = 100
 
-        self.bot_name = 'BOT_GREEDY_LOGIC'
-        self.log_file_path = '../logs/bot_logic_greedy/test_log.log'
+        ## default configs for bot
+        self.default_bot_name = 'BOT_GREEDY_LOGIC'
+        self.bot_name = self.default_bot_name + bot_study_name
+        
+        self.log_file_path='../logs/bot_logic_greedy/test_log.log'
         self.logging_config="LOGFILE"
 
         self.list_of_opposite_directions = [[pygame.K_RIGHT, 'LEFT'],
@@ -89,5 +92,7 @@ class LogicGreedyBotApp(BotApp):
             self.future_snake_position[0] += 10
 
 if __name__ == '__main__':
-    theApp = LogicGreedyBotApp()
+
+    theApp = LogicGreedyBotApp(bot_study_name = '_1')
+    print(theApp.game_over_check)
     theApp.on_execute()

@@ -8,10 +8,14 @@ import time
 import random
 import logging 
 import os
+import sys
 
 class App:
     def __init__(self, 
-                 _logging=True):
+                 _logging=True,
+                 log_file_path = '../logs/test_log.log',
+                 bot_study_name = ''
+                 ):
     
         self._running = True
         self._display_surf = None
@@ -19,14 +23,16 @@ class App:
         # logging configs
         self._logging = _logging
         self.logging_config = "COMMANDLINE"
-        self.log_file_path = '../logs/test_log.log'
+        self.log_file_path = log_file_path
         self.cycle_n = 0
-        self.bot_name = 'HUMAN'
+        self.default_bot_name = 'HUMAN'
+        self.bot_name =  self.default_bot_name + bot_study_name 
 
         # basic config to start game speed
         self.snake_speed = 15
         self.snake_position = [100, 50]
         self.score = 0
+        self.game_over_check = False
         
         # setting default snake direction towards right
         self.direction = 'RIGHT'
@@ -153,6 +159,8 @@ class App:
     # game over function
     def game_over(self):
     
+        self.game_over_check = True
+
         pygame.font.init()
 
         # log final loop
@@ -175,16 +183,16 @@ class App:
         # blit will draw the text on screen
         self.game_window.blit(game_over_surface, game_over_rect)
         pygame.display.flip()
-        
-        # after 2 seconds we will quit the 
-        # program
-        time.sleep(2)
-        
+
+        time.sleep(1)
+
+        self.game_exit()
+
+    def game_exit(self):
         # deactivating pygame library
         pygame.quit()
-
-        quit()
-
+        sys.exit()
+        
     def game_loop(self):
 
         # logging
@@ -241,6 +249,7 @@ class App:
             self.game_over()
         if self.snake_position[1] < 0 or self.snake_position[1] > self.window_y-10:
             self.game_over()
+            
         
         # Touching the snake body
         for block in self.snake_body[1:]:
