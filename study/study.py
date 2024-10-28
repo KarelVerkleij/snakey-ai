@@ -23,8 +23,9 @@ class Analysis:
 
         
         for i in range(0,10):
-            theApp = LogicGreedyBotApp(bot_study_name=f"_{str(i)}")
-            theApp.log_file_path = f'../logs/bot_logic_greedy/study_1_iteration_{str(i)}.log'
+            theApp = LogicGreedyBotApp(bot_study_name=f"_{str(i)}",
+                                       log_file_path = f'../logs/bot_logic_greedy/study_1_iteration_{str(i)}.log'
+                                       )
             theApp.snake_speed=1000
             
             print(f"i : {str(i)}")
