@@ -28,9 +28,12 @@ class LogicInfintyBotApp(BotApp):
         self.snake_position = [randint(1,self.window_x/10 -1) * 10, randint(1,self.window_y/10 -1) * 10]
         self.snake_body = [self.snake_position]
 
+        # persist path
+        self.calculate_path()
+
     @overrides(BotApp)
     def bot_input(self):
-        self.calculate_path()
+        # self.calculate_path()
         self.calculate_next_move()
 
         return pygame.event.Event(pygame.KEYDOWN, key=self.dict_of_direction_and_events[self.next_move])
