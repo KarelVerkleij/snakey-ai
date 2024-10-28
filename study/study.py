@@ -18,9 +18,9 @@ class Analysis:
 
         # self._logger_init()
 
-        for i in range(0,10):
+        for i in range(0,2):
             theApp = LogicGreedyBotApp(bot_study_name=f"_{str(i)}")
-            theApp.log_file_path = '../logs/bot_logic_greedy/study_1'
+            theApp.log_file_path = f'../logs/bot_logic_greedy/study_1_iteration_{str(i)}.log'
             
             print(f"i : {str(i)}")
             p = mp.Process(target=theApp.on_execute)        
