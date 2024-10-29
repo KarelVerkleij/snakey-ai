@@ -8,6 +8,8 @@ import pygame
 # algorithm https://kychin.netlify.app/snake-blog/hamiltonian-cycle/#:~:text=When%20applied%20to%20the%20game,(like%20in%20my%20case).
 # derived from python code https://github.com/CheranMahalingam/Snake_Hamiltonian_Cycle_Solver/blob/master/Snake_Solver.py
 
+
+#TODO fix logging
 class LogicInfintyBotApp(BotApp):
 
     def __init__(self, bot_study_name='', log_file_path='../logs/bot_logic_inifity/test_log.log'):
@@ -22,6 +24,7 @@ class LogicInfintyBotApp(BotApp):
                                              'DOWN' : pygame.K_DOWN}
         
         self.snake_speed = 1000
+        self.logging_config="LOGFILE"
         
         self.window_x, self.window_y = 200, 240
 
