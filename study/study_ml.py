@@ -24,7 +24,7 @@ class Analysis:
         # genetic check set-up
         self.max_score = 0
         self.avg_score = 0
-        self.test_games = 1
+        self.test_games = 1 # unused
         self.score1 = 0
         self.steps_per_game = 2500 
         self.score2 = 0
@@ -40,24 +40,23 @@ class Analysis:
     def checkWeights(self, weights):
 
         parent_conn, child_conn = Pipe()
-        for i in range(0,self.test_games):
-            self.weights = weights
-            
 
-            theApp = MLBotApp(bot_study_name=f"_{str(i)}",
-                              log_file_path = f'../logs/bot_ml/study_1_iteration_{str(i)}.log',
-                              weights = self.weights,
-                              steps_per_game=self.steps_per_game
-                             )
-            theApp.snake_speed=1000
-            
-            print(f"i : {str(i)}")
-            p = Process(target=theApp.on_execute, args=(child_conn,))        
-            p.start()
-            p.join()
+        self.weights = weights
 
-            self.collected_data = parent_conn.recv()
-            self.score1, self.score2, self.max_score = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"]
+        theApp = MLBotApp(bot_study_name=f"_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}",
+                            log_file_path = f'../logs/bot_ml/study_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}.log',
+                            weights = self.weights,
+                            steps_per_game=self.steps_per_game
+                            )
+        theApp.snake_speed=1000
+        
+        print(f"generation_{str(self.n_generation)}, iteration_{str(self.n_iteration)}")
+        p = Process(target=theApp.on_execute, args=(child_conn,))        
+        p.start()
+        p.join()
+
+        self.collected_data = parent_conn.recv()
+        self.score1, self.score2, self.max_score = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"]
 
         # TODO how to tie this function to runTestGame / get updated values for this run
         # need to implement pipeline
@@ -67,6 +66,7 @@ class Analysis:
 
     def trainingGeneticModel(self):
         for generation in range(self.num_generations):
+            self.n_generation = generation
             # file1 = open(filename, "a+")
             # file1.write("##############        GENERATION " + str(generation)+ "  ############### \n")
             # file1.close()
@@ -106,6 +106,7 @@ class Analysis:
         # calculating the fitness value by playing a game with the given weights in chromosome
         fitness = []
         for i in range(pop.shape[0]):
+            self.n_iteration = i 
             fit = self.checkWeights(pop[i])
             
             # file1 = open(filename, "a+")

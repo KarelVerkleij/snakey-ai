@@ -156,8 +156,6 @@ class MLBotApp(BotApp):
             self.prev_direction = self.predicted_direction
         
         # Based on predicted direction, calculate snake direction.
-        print(f"predicted direction: {self.predicted_direction}")
-
         if self.predicted_direction == -1:
             self.new_direction = np.array([self.current_direction_vector[1], -self.current_direction_vector[0]])
         if self.predicted_direction == 1:
