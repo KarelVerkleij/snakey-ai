@@ -35,6 +35,7 @@ class MLBotApp(BotApp):
             self.new_population = np.random.choice(np.arange(-1, 1, step = 0.01), size = self.pop_size, replace=True)
             self.weights = self.new_population[0]
         else:
+            print("weights loaded")
             self.weights = weights
 
         self.steps_per_game = steps_per_game
@@ -52,6 +53,9 @@ class MLBotApp(BotApp):
         if self.on_init() == False:
             self._running = False 
 
+        if conn != None:
+            self.conn = conn
+
         while( self._running ):
             # handling key events
             for event in pygame.event.get():
@@ -68,14 +72,9 @@ class MLBotApp(BotApp):
             self.on_loop()
             self.on_render()
 
-        if conn != None:
-            print("send data to parent")
-            self.collected_data = {
-                "score1" : self.score1,
-                "score2" : self.score2,
-                "max_score" : self.max_score
-            } 
-            conn.send(self.collected_data)
+        print("finished loop")
+
+      
 
         self.on_cleanup()
 
@@ -101,6 +100,15 @@ class MLBotApp(BotApp):
         bot_name = self.bot_name
         final_n_cylce = self.cycle_n
         final_score = self.score
+        if self.conn != None:        
+            print("send data to parent")
+            self.collected_data = {
+                "score1" : self.score1,
+                "score2" : self.score2,
+                "max_score" : self.max_score
+            } 
+            self.conn.send(self.collected_data)
+        
         print(f"bot: {bot_name}, max_cycle: {final_n_cylce}, final_score {final_score}, score_1: {self.score1}, score_2: {self.score2}, max_score: {self.max_score}, ")
 
     def evaluate_choice_nn(self):
@@ -148,10 +156,14 @@ class MLBotApp(BotApp):
             self.prev_direction = self.predicted_direction
         
         # Based on predicted direction, calculate snake direction.
+        print(f"predicted direction: {self.predicted_direction}")
+
         if self.predicted_direction == -1:
             self.new_direction = np.array([self.current_direction_vector[1], -self.current_direction_vector[0]])
         if self.predicted_direction == 1:
             self.new_direction = np.array([-self.current_direction_vector[1], self.current_direction_vector[0]])
+        else:
+            self.new_direction = np.array(self.current_direction_vector)
 
         self.convert_nn_output_into_move()
         
@@ -162,7 +174,7 @@ class MLBotApp(BotApp):
         self.change_in_y = self.new_direction[1]/10
 
         # convert into commands 
-        if self.change_in_x == -1 and change_in_y == 0:
+        if self.change_in_x == -1 and self.change_in_y == 0:
             next_move = 'LEFT'
         elif self.change_in_x == 1 and self.change_in_y == 0:
             next_move = 'RIGHT'

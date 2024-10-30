@@ -84,7 +84,8 @@ class Analysis:
             # Selecting the best parents in the population for mating.
             self.parents = self.select_mating_pool(self.new_population, fitness, self.num_parents_mating)
             # Generating next generation using crossover.
-            self.offspring_crossover = self.crossover(self.parents, offspring_size = (self.pop_size[0] - self.parents.shape[0], self.num_weights))
+            self.offspring_crossover = self.crossover(self.parents, offspring_size = (self.pop_size[0] - self.parents.shape[0], 
+                                                                                      self.num_weights))
             # Adding some variations to the offsrping using mutation.
             offspring_mutation = self.mutation(self.offspring_crossover, self.mutation_intensity)
             
@@ -114,7 +115,7 @@ class Analysis:
             fitness.append(fit)
         return np.array(fitness)
 
-    def select_mating_pool(pop, fitness, num_parents):
+    def select_mating_pool(self, pop, fitness, num_parents):
         # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
         parents = np.empty((num_parents, pop.shape[1]))
         for parent_num in range(num_parents):
@@ -124,7 +125,7 @@ class Analysis:
             fitness[max_fitness_idx] = -99999999
         return parents
 
-    def crossover(parents, offspring_size):
+    def crossover(self, parents, offspring_size):
         # creating children for next generation 
         offspring = np.empty(offspring_size)
         
@@ -144,7 +145,7 @@ class Analysis:
         return offspring
 
     # two results with 0.1 and 0.01
-    def mutation(offspring_crossover, mutation_intensity):
+    def mutation(self, offspring_crossover, mutation_intensity):
         # mutating the offsprings generated from crossover to maintain variation in the population
         for idx in range(offspring_crossover.shape[0]):
             for i in range(offspring_crossover.shape[1]):
