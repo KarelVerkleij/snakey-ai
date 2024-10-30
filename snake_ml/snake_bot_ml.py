@@ -14,19 +14,30 @@ import pygame
 # TODO combine into one class
 class MLBotApp(BotApp):
 
-    def __init__(self, bot_study_name='', log_file_path='../logs/bot_ml/test_log.log', weights=None):
+    def __init__(self, bot_study_name='', 
+                 log_file_path='../logs/bot_ml/test_log.log', 
+                 weights=None,
+                 neural_network_snake=nn_snake(),
+                 steps_per_game=2500):
         super().__init__()
 
         self.snake_speed = 100
 
         # TODO revise if this needs to be here
         # new_population is to be iterated over etc. probably should be in study with weights being given on initial run
-        self.neural_network_snake = nn_snake()
-        self.num_weights = self.neural_network_snake.n_x*self.neural_network_snake.n_h + self.neural_network_snake.n_h*self.neural_network_snake.n_h2 + self.neural_network_snake.n_h2*self.neural_network_snake.n_y
-        self.sol_per_pop = 50
-        self.pop_size = (self.sol_per_pop, self.num_weights)
-        self.new_population = np.random.choice(np.arange(-1, 1, step = 0.01), size = self.pop_size, replace=True)
-        self.weights = self.new_population[0]
+        self.neural_network_snake = neural_network_snake
+        self.log_file_path = log_file_path
+        
+        if type(weights) == type(None):
+            self.num_weights = self.neural_network_snake.n_x*self.neural_network_snake.n_h + self.neural_network_snake.n_h*self.neural_network_snake.n_h2 + self.neural_network_snake.n_h2*self.neural_network_snake.n_y
+            self.sol_per_pop = 50
+            self.pop_size = (self.sol_per_pop, self.num_weights)
+            self.new_population = np.random.choice(np.arange(-1, 1, step = 0.01), size = self.pop_size, replace=True)
+            self.weights = self.new_population[0]
+        else:
+            self.weights = weights
+
+        self.steps_per_game = steps_per_game
 
         # nn set-up 
         self.count_same_direction = 0
@@ -35,6 +46,40 @@ class MLBotApp(BotApp):
         self.score2 = 0
         self.max_score = 0 
 
+    @overrides(BotApp) 
+    # initializes pygame & enters main loop where events are checked, exectued in a continuous cycle
+    def on_execute(self, conn=None):
+        if self.on_init() == False:
+            self._running = False 
+
+        while( self._running ):
+            # handling key events
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.change_to = 'UP'
+                    if event.key == pygame.K_DOWN:
+                        self.change_to = 'DOWN'
+                    if event.key == pygame.K_LEFT:
+                        self.change_to = 'LEFT'
+                    if event.key == pygame.K_RIGHT:
+                        self.change_to = 'RIGHT'
+
+            self.on_loop()
+            self.on_render()
+
+        if conn != None:
+            print("send data to parent")
+            self.collected_data = {
+                "score1" : self.score1,
+                "score2" : self.score2,
+                "max_score" : self.max_score
+            } 
+            conn.send(self.collected_data)
+
+        self.on_cleanup()
+
+    
     @overrides(BotApp) 
     def bot_input(self):
 
@@ -50,7 +95,13 @@ class MLBotApp(BotApp):
         self.bot_next_move = self.bot_input()
         self.evaluate_choice_nn()
         pygame.event.post(self.bot_next_move)
-        
+
+    @overrides(BotApp)
+    def print_results(self):
+        bot_name = self.bot_name
+        final_n_cylce = self.cycle_n
+        final_score = self.score
+        print(f"bot: {bot_name}, max_cycle: {final_n_cylce}, final_score {final_score}, score_1: {self.score1}, score_2: {self.score2}, max_score: {self.max_score}, ")
 
     def evaluate_choice_nn(self):
         # Evaluate the next step of snake.
@@ -184,105 +235,12 @@ class MLBotApp(BotApp):
 # https://github.com/ygutgutia/Snake-Game-Genetic-Algorithm/blob/main/Run_Game.py
 
 
+# simple running logic
+
 if __name__ == '__main__':
 
     theApp = MLBotApp(bot_study_name = '_1')
     theApp.on_execute()
+    print(theApp.max_score)
 
 
-
-
-
-
-# TODO move to study?
-
-# def run_game_with_ML(display, clock, weights):
-#     max_score = 0
-#     avg_score = 0
-#     test_games = 1
-#     score1 = 0
-#     steps_per_game = 2500
-#     score2 = 0
-
-#     MLBotApp 
-
-#     # High weightage is given for maximum score of snake in its 2500 steps.
-#     # return fitness value
-#     return score1 + score2 + max_score * 5000
-
-
-
-
-
-
-
-# https://github.com/ygutgutia/Snake-Game-Genetic-Algorithm/blob/main/Genetic_Algorithm.py
-
-
-
-
-# # TODO fix to class & remove circular dependency
-# def cal_pop_fitness(pop, filename):
-#     # calculating the fitness value by playing a game with the given weights in chromosome
-#     fitness = []
-#     for i in range(pop.shape[0]):
-#         fit = run_game_with_ML(display, clock, pop[i])
-        
-#         file1 = open(filename, "a+")
-#         file1.write("fitness value of chromosome " + str(i) + " :  " + str(fit) + "\n")
-#         file1.close()
-#         # print('fitness value of chromosome '+ str(i) +' :  ', fit)
-#         fitness.append(fit)
-#     return np.array(fitness)
-
-# def select_mating_pool(pop, fitness, num_parents):
-#     # Selecting the best individuals in the current generation as parents for producing the offspring of the next generation.
-#     parents = np.empty((num_parents, pop.shape[1]))
-#     for parent_num in range(num_parents):
-#         max_fitness_idx = np.where(fitness == np.max(fitness))
-#         max_fitness_idx = max_fitness_idx[0][0]
-#         parents[parent_num, :] = pop[max_fitness_idx, :]
-#         fitness[max_fitness_idx] = -99999999
-#     return parents
-
-# def crossover(parents, offspring_size):
-#     # creating children for next generation 
-#     offspring = np.empty(offspring_size)
-    
-#     for k in range(offspring_size[0]): 
-  
-#         while True:
-#             parent1_idx = randint(0, parents.shape[0] - 1)
-#             parent2_idx = randint(0, parents.shape[0] - 1)
-#             # produce offspring from two parents if they are different
-#             if parent1_idx != parent2_idx:
-#                 for j in range(offspring_size[1]):
-#                     if uniform(0, 1) < 0.5:
-#                         offspring[k, j] = parents[parent1_idx, j]
-#                     else:
-#                         offspring[k, j] = parents[parent2_idx, j]
-#                 break
-#     return offspring
-
-# # two results with 0.1 and 0.01
-# def mutation(offspring_crossover, mutation_intensity):
-#     # mutating the offsprings generated from crossover to maintain variation in the population
-#     for idx in range(offspring_crossover.shape[0]):
-#         for i in range(offspring_crossover.shape[1]):
-#             if uniform(0, 1) < mutation_intensity:
-#                 random_value = np.random.choice(np.arange(-1, 1, step = 0.001), size = (1), replace = False)
-#                 offspring_crossover[idx, i] = offspring_crossover[idx, i] + random_value
-#     return offspring_crossover
-
-# # flat curve result
-# # def mutation(offspring_crossover, mutation_intensity):
-# #     # mutating the offsprings generated from crossover to maintain variation in the population
-# #     num_genes_mutate = (int)(mutation_intensity*offspring_crossover.shape[1]/100)
-# #     for idx in range(offspring_crossover.shape[0]):
-# #         for _ in range(num_genes_mutate):
-# #             i = randint(0, offspring_crossover.shape[1]-1)
-# #             random_value = np.random.choice(np.arange(-1, 1, step = 0.001), size = (1), replace = False)
-# #             offspring_crossover[idx, i] = offspring_crossover[idx, i] + random_value
-# #     return offspring_crossover
-
-# # /¡
