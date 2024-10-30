@@ -251,12 +251,9 @@ class App:
         )
 
         # Game Over conditions
-        if self.snake_position[0] < 0 or self.snake_position[0] > self.window_x-10:
-            self.game_over()
-        if self.snake_position[1] < 0 or self.snake_position[1] > self.window_y-10:
+        if self.boundary_collision(self.snake_position):
             self.game_over()
             
-        
         # Touching the snake body
         for block in self.snake_body[1:]:
             if self.snake_position[0] == block[0] and self.snake_position[1] == block[1]:
@@ -270,6 +267,15 @@ class App:
 
         # Frame Per Second /Refresh Rate
         self.fps.tick(self.snake_speed)
+
+    def boundary_collision(self, current_snake_position):
+        conditions = [current_snake_position[0] < 0, 
+                      current_snake_position[0] > self.window_x-10,
+                      current_snake_position[1] < 0,
+                      current_snake_position[1] > self.window_y-10
+                     ]
+
+        return any(conditions)        
 
     def logger_init(self):
         
