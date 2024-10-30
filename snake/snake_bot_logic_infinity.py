@@ -18,11 +18,7 @@ class LogicInfintyBotApp(BotApp):
         self.initial_snake_position = self.snake_position
         self.next_move = ""
 
-        self.dict_of_direction_and_events = {'LEFT' : pygame.K_LEFT,
-                                             'RIGHT': pygame.K_RIGHT,
-                                             'UP'   : pygame.K_UP,
-                                             'DOWN' : pygame.K_DOWN}
-        
+
         self.snake_speed = 1000
         self.logging_config="LOGFILE"
         

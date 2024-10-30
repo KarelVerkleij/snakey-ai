@@ -8,10 +8,10 @@ class nn_snake:
 
     def __init__(self):
         
-        self.n_x = 7 # nodes in input layer
-        self.n_h = 9  # nodes in hidden layer I
+        self.n_x = 7   # nodes in input layer
+        self.n_h = 9   # nodes in hidden layer I
         self.n_h2 = 15 # nodes in hidden layer II
-        self.n_y = 3 # nodes in output layer
+        self.n_y = 3   # nodes in output layer
 
         self.W1_shape = (self.n_h, self.n_x) # Weights between input and hidden layer I.
         self.W2_shape = (self.n_h2, self.n_h) # Weights between hidden layer I and hidden layer II.

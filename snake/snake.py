@@ -50,7 +50,13 @@ class App:
         self.red = pygame.Color(255, 0, 0)
         self.green = pygame.Color(0, 255, 0)
         self.blue = pygame.Color(0, 0, 255)
-        
+
+        self.dict_of_direction_and_events = {'LEFT' : pygame.K_LEFT,
+                                            'RIGHT': pygame.K_RIGHT,
+                                            'UP'   : pygame.K_UP,
+                                            'DOWN' : pygame.K_DOWN}
+
+    
 
     # initializes all pygame modules, then creates window 
     def on_init(self):
