@@ -42,7 +42,6 @@ class MLBotApp(BotApp):
             self.new_population = np.random.choice(np.arange(-1, 1, step = 0.01), size = self.pop_size, replace=True)
             self.weights = self.new_population[0]
         else:
-            print("weights loaded")
             self.weights = weights
 
         self.steps_per_game = steps_per_game
@@ -79,7 +78,7 @@ class MLBotApp(BotApp):
             self.on_loop()
             self.on_render()
 
-        print("finished loop")
+
 
       
 
@@ -108,7 +107,6 @@ class MLBotApp(BotApp):
         final_n_cylce = self.cycle_n
         final_score = self.score
         if self.conn != None:        
-            print("send data to parent")
             self.collected_data = {
                 "score1" : self.score1,
                 "score2" : self.score2,
@@ -161,7 +159,6 @@ class MLBotApp(BotApp):
                                                                                     ]).reshape(-1, 7), 
                                                                                     individual = self.weights))) - 1
         self.predictions.append(self.predicted_direction)
-        print(f" this is the predicted direction: {self.predicted_direction}")
         
         # Increment counter if predicted direction is same as past direction. 
         if self.predicted_direction == self.prev_direction:
@@ -169,7 +166,6 @@ class MLBotApp(BotApp):
             if self.count_same_direction > self.max_count_same_direction:
                     self.max_count_same_direction = self.count_same_direction
         else:
-            print("new direction was taken!")
             self.count_same_direction = 0
             self.prev_direction = self.predicted_direction
         
@@ -181,8 +177,6 @@ class MLBotApp(BotApp):
         else:
             self.new_direction = np.array(self.current_direction_vector)
 
-        print(f" this is the new direction: {self.new_direction}")
-
         return self.convert_nn_output_into_move()
         
 
@@ -190,8 +184,6 @@ class MLBotApp(BotApp):
         
         self.change_in_x = self.new_direction[0]/10
         self.change_in_y = self.new_direction[1]/10
-
-        print(f" this is the new direction change in x: {self.change_in_x}, change in y: {self.change_in_y}")
 
         # convert into commands 
         if self.change_in_x == -1 and self.change_in_y == 0:
@@ -204,8 +196,6 @@ class MLBotApp(BotApp):
             next_move = 'UP'
         else:
             print("something went wrong - illegal move")
-
-        print(f" this is the next moe: {next_move}")
 
         return self.dict_of_direction_and_events[next_move]
 

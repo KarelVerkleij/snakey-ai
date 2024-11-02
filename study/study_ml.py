@@ -65,7 +65,7 @@ class Analysis:
         print(self.collected_data)
         self.score1, self.score2, self.max_score, self.max_count_same_direction = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"], self.collected_data["max_same_direction"]
 
-        return self.score1 + self.score2 + self.max_score * 5000 - self.max_count_same_direction * 5
+        return self.score1 + self.score2 + self.max_score * 5000
 
 # https://github.com/ygutgutia/Snake-Game-Genetic-Algorithm/blob/main/Genetic_Algorithm.py
 
