@@ -7,10 +7,16 @@ from random import randint, uniform
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+import os
+
 class Analysis:
 
     def __init__(self):
         self.logging_config = "COMMANDLINE"
+
+        self.filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+                                      "total_log.log")
 
         # neural network set-up
         self.neural_network_snake = nn_snake()
@@ -44,9 +50,9 @@ class Analysis:
         self.weights = weights
 
         theApp = MLBotApp(bot_study_name=f"_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}",
-                            log_file_path = f'../logs/bot_ml/study_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}.log',
-                            weights = self.weights,
-                            steps_per_game=self.steps_per_game
+                          log_file_path = f'../logs/bot_ml/study_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}.log',
+                          weights = self.weights,
+                          steps_per_game=self.steps_per_game
                             )
         theApp.snake_speed=1000
         
@@ -56,42 +62,43 @@ class Analysis:
         p.join()
 
         self.collected_data = parent_conn.recv()
-        self.score1, self.score2, self.max_score = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"]
+        print(self.collected_data)
+        self.score1, self.score2, self.max_score, self.max_count_same_direction = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"], self.collected_data["max_same_direction"]
 
-        # TODO how to tie this function to runTestGame / get updated values for this run
-        # need to implement pipeline
-        return self.score1 + self.score2 + self.max_score * 5000
+        return self.score1 + self.score2 + self.max_score * 5000 - self.max_count_same_direction * 5
 
 # https://github.com/ygutgutia/Snake-Game-Genetic-Algorithm/blob/main/Genetic_Algorithm.py
 
     def trainingGeneticModel(self):
         for generation in range(self.num_generations):
             self.n_generation = generation
-            # file1 = open(filename, "a+")
-            # file1.write("##############        GENERATION " + str(generation)+ "  ############### \n")
-            # file1.close()
-            # print('##############        GENERATION ' + str(generation)+ '  ###############' )
+            
+            file1 = open(self.filename, "a+")
+            file1.write("##############        GENERATION " + str(generation)+ "  ############### \n")
+            file1.close()
+            print('##############        GENERATION ' + str(generation)+ '  ###############' )
             
             # Measuring the fitness of each chromosome in the population.
-            fitness = self.cal_pop_fitness(self.new_population)
-            self.max_fitness.append(np.max(fitness))
+            self.fitness = self.cal_pop_fitness(self.new_population)
+            self.max_fitness.append(np.max(self.fitness))
             
-            # file1 = open(filename, "a+")
-            # file1.write("#######  fittest chromosome in generation " + str(generation) + " is having fitness value:  " + str(np.max(fitness)) + "\n")
-            # file1.close()
-            # print('#######  fittest chromosome in generation ' + str(generation) + ' is having fitness value:  ', np.max(fitness))
+            file1 = open(self.filename, "a+")
+            file1.write("#######  fittest chromosome in generation " + str(generation) + " is having fitness value:  " + str(np.max(self.fitness)) + "\n")
+            file1.close()
+            print('#######  fittest chromosome in generation ' + str(generation) + ' is having fitness value:  ', np.max(self.fitness))
             
             # Selecting the best parents in the population for mating.
-            self.parents = self.select_mating_pool(self.new_population, fitness, self.num_parents_mating)
+            self.parents = self.select_mating_pool(self.new_population, self.fitness, self.num_parents_mating)
+            
             # Generating next generation using crossover.
             self.offspring_crossover = self.crossover(self.parents, offspring_size = (self.pop_size[0] - self.parents.shape[0], 
                                                                                       self.num_weights))
             # Adding some variations to the offsrping using mutation.
-            offspring_mutation = self.mutation(self.offspring_crossover, self.mutation_intensity)
+            self.offspring_mutation = self.mutation(self.offspring_crossover, self.mutation_intensity)
             
             # Creating the new population based on the parents and offspring.
             self.new_population[0:self.parents.shape[0], :] = self.parents
-            self.new_population[self.parents.shape[0]:, :] = offspring_mutation
+            self.new_population[self.parents.shape[0]:, :] = self.offspring_mutation
             
         self.gen_count = list(range(1, self.num_generations+1))
         # #Plotting Graph
@@ -102,17 +109,18 @@ class Analysis:
         plt.show()
 
     # # TODO fix to class & remove circular dependency
-    def cal_pop_fitness(self, pop, filename=None):
+    def cal_pop_fitness(self, pop):
         # calculating the fitness value by playing a game with the given weights in chromosome
         fitness = []
         for i in range(pop.shape[0]):
             self.n_iteration = i 
             fit = self.checkWeights(pop[i])
             
-            # file1 = open(filename, "a+")
-            # file1.write("fitness value of chromosome " + str(i) + " :  " + str(fit) + "\n")
-            # file1.close()
-            # print('fitness value of chromosome '+ str(i) +' :  ', fit)
+            file1 = open(self.filename, "a+")
+            file1.write("fitness value of chromosome " + str(i) + " :  " + str(fit) + "\n")
+            file1.close()
+            print('fitness value of chromosome '+ str(i) +' :  ', fit)
+
             fitness.append(fit)
         return np.array(fitness)
 

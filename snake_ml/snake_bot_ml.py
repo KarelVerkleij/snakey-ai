@@ -14,14 +14,21 @@ import pygame
 # TODO combine into one class
 class MLBotApp(BotApp):
 
-    def __init__(self, bot_study_name='', 
+    def __init__(self, 
+                 bot_study_name='', 
                  log_file_path='../logs/bot_ml/test_log.log', 
                  weights=None,
                  neural_network_snake=nn_snake(),
-                 steps_per_game=2500):
+                 steps_per_game=2500,
+                 bot_name='BOT_ML'
+                 ):
         super().__init__()
 
+        self.bot_name = bot_name
         self.snake_speed = 100
+        self.max_count_same_direction = 0
+
+        self.predictions = []
 
         # TODO revise if this needs to be here
         # new_population is to be iterated over etc. probably should be in study with weights being given on initial run
@@ -105,7 +112,11 @@ class MLBotApp(BotApp):
             self.collected_data = {
                 "score1" : self.score1,
                 "score2" : self.score2,
-                "max_score" : self.max_score
+                "max_score" : self.max_score,
+                "max_same_direction" : self.max_count_same_direction,
+                "n_cycles" : self.cycle_n,
+                "predictions" : self.predictions
+
             } 
             self.conn.send(self.collected_data)
         
@@ -134,8 +145,10 @@ class MLBotApp(BotApp):
         self.blocked_directions()
         self.calculate_angle_with_fruit()
         
-        self.predictions = []
         
+        
+
+
         # Predict direction(Left,right,forward) based on output from neural network.
         self.predicted_direction = np.argmax(np.array(self.neural_network_snake.forward_propagation(X = np.array([
                                                                                         self.is_left_blocked, 
@@ -147,11 +160,16 @@ class MLBotApp(BotApp):
                                                                                         self.snake_direction_vector_normalized[1]
                                                                                     ]).reshape(-1, 7), 
                                                                                     individual = self.weights))) - 1
+        self.predictions.append(self.predicted_direction)
+        print(f" this is the predicted direction: {self.predicted_direction}")
         
         # Increment counter if predicted direction is same as past direction. 
         if self.predicted_direction == self.prev_direction:
             self.count_same_direction += 1
+            if self.count_same_direction > self.max_count_same_direction:
+                    self.max_count_same_direction = self.count_same_direction
         else:
+            print("new direction was taken!")
             self.count_same_direction = 0
             self.prev_direction = self.predicted_direction
         
@@ -163,13 +181,17 @@ class MLBotApp(BotApp):
         else:
             self.new_direction = np.array(self.current_direction_vector)
 
-        self.convert_nn_output_into_move()
+        print(f" this is the new direction: {self.new_direction}")
+
+        return self.convert_nn_output_into_move()
         
 
     def convert_nn_output_into_move(self):
         
         self.change_in_x = self.new_direction[0]/10
         self.change_in_y = self.new_direction[1]/10
+
+        print(f" this is the new direction change in x: {self.change_in_x}, change in y: {self.change_in_y}")
 
         # convert into commands 
         if self.change_in_x == -1 and self.change_in_y == 0:
@@ -183,7 +205,9 @@ class MLBotApp(BotApp):
         else:
             print("something went wrong - illegal move")
 
-        return pygame.event.Event(pygame.KEYDOWN, key=self.dict_of_direction_and_events[next_move])
+        print(f" this is the next moe: {next_move}")
+
+        return self.dict_of_direction_and_events[next_move]
 
     def blocked_directions(self):
         
