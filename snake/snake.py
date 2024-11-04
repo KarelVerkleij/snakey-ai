@@ -39,7 +39,7 @@ class App:
         self.change_to = self.direction
 
         # defining first 4 blocks of snake
-        self.snake_body = [self.snake_position]
+        self.snake_body = [[100, 50], [90, 50], [80, 50], [70, 50]]
 
         # window size
         self.size = self.window_x, self.window_y = 720, 480
@@ -203,7 +203,6 @@ class App:
         pygame.quit()
         sys.exit()
         
-        time.sleep(1)
 
     def game_loop(self):
 

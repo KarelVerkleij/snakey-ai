@@ -38,8 +38,8 @@ class Analysis:
         # genetic algo set-up / hyperparameters
         self.sol_per_pop = 50
         self.num_generations = 100
-        self.crossover_percentage = 0.2
-        self.mutation_intensity = 0.01
+        self.crossover_percentage = 0.3
+        self.mutation_intensity = 0.05
         self.num_parents_mating = (int)(self.crossover_percentage*self.sol_per_pop) # has to be even
         self.max_fitness = []
         
@@ -47,11 +47,11 @@ class Analysis:
 
         parent_conn, child_conn = Pipe()
 
-        self.weights = weights
+        print(weights)
 
         theApp = MLBotApp(bot_study_name=f"_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}",
                           log_file_path = f'../logs/bot_ml/study_generation_{str(self.n_generation)}_iteration_{str(self.n_iteration)}.log',
-                          weights = self.weights,
+                          weights = weights,
                           steps_per_game=self.steps_per_game
                             )
         theApp.snake_speed=1000
@@ -62,7 +62,6 @@ class Analysis:
         p.join()
 
         self.collected_data = parent_conn.recv()
-        print(self.collected_data)
         self.score1, self.score2, self.max_score, self.max_count_same_direction = self.collected_data["score1"], self.collected_data["score2"], self.collected_data["max_score"], self.collected_data["max_same_direction"]
 
         return self.score1 + self.score2 + self.max_score * 5000
@@ -77,7 +76,7 @@ class Analysis:
             file1.write("##############        GENERATION " + str(generation)+ "  ############### \n")
             file1.close()
             print('##############        GENERATION ' + str(generation)+ '  ###############' )
-            
+           
             # Measuring the fitness of each chromosome in the population.
             self.fitness = self.cal_pop_fitness(self.new_population)
             self.max_fitness.append(np.max(self.fitness))
